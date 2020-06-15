@@ -40,6 +40,25 @@ void TrafficLight::init(int dataPin, int latchPin, int clkPin, int segP[], int d
 }
 
 
+void TrafficLight::init(int data, int latch, int clk, int segP[], int digitsP[], int hour_1, int hour_2) {
+  SPI_MOSI = data;
+  SPI_CS = latch;
+  SPI_CLK = clk;
+
+  timeRed = hour_1;
+  timeGreen = hour_2;
+  disTime = timeRed;
+
+  for(int i=0; i<NUM_SEG; i++) {
+    segPin[i] = segP[i];
+  }
+  
+  for(int i=0; i<NUM_DIGIT; i++) {
+    digitsPin[i] = digitsP[i];
+  }
+}
+
+
 void TrafficLight::writeBitOrder(int* order, byte& firstPart, byte& secondPart) {
   for(int i=0; i<8; i++) {
     firstPart |= (order[15 - i] << i);
@@ -138,14 +157,17 @@ BitOrder TrafficLight::generateBitOrder() {
 
   // ######################################################################################################
   if(state == RED) {
+    order[ledPin[RED]] = 0; // turn on RED
     order[ledPin[GREEN]] = 1; // set to turn off GREEN
     order[ledPin[YELLOW]] = 1; // set to turn off YELLOW
   }
   else if(state == GREEN) {
+    order[ledPin[GREEN]] = 0; // turn on GREEN
     order[ledPin[RED]] = 1; // set to turn off RED
     order[ledPin[YELLOW]] = 1; // set to turn off YELLOW
   }
   else {
+    order[ledPin[YELLOW]] = 0; // turn on YELLOW
     order[ledPin[GREEN]] = 1; // set to turn off GREEN
     order[ledPin[RED]] = 1; // set to turn off RED
   }
@@ -210,6 +232,7 @@ void TrafficLight::controlYellow(int onOff) {
   int b[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   
   if(onOff == ON) {
+    b[ledPin[YELLOW]] = 0; // turn on YELLOW
     b[ledPin[RED]] = 1; // turn off RED
     b[ledPin[GREEN]] = 1; // turn off GREEN
   } else {

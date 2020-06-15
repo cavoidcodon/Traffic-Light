@@ -69,7 +69,7 @@ class TrafficLight {
       // Initialize which pin in Max7219 connect to the 7-segment, traffic light
       // -------------------------------------------------------------------------
       void init(int dataPin, int latchPin, int clkPin, int segP[], int digitsP[], int ledP[], int tR, int tG, int tY, int initState);
-
+      void init(int dataPin, int latchPin, int clkPin, int segP[], int digitsP[], int hour_1, int hour_2);
       // Getter, setter
       // -------------------------------------
       void setState(int s);
@@ -102,6 +102,7 @@ class TrafficLight {
       // return a BitOrder struct variable
       // -------------------------------------
       BitOrder generateBitOrder();
+      BitOrder generateBitOrder(int time);
 
 
       // shiftOut the bit order to show the current state {RED, GREEN, YELLOW}, time
